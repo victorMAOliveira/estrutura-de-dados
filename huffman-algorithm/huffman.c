@@ -3,7 +3,7 @@
  * @authors Victor Amaral, Lorenzo Holanda, Lucitanea Lopes
  * @date 28/10/2025
  * @version 0.1
- * @details implementation of huffman's compression algorithm in C
+ * @details Implementation of Huffman's compression algorithm in C
  */
 
 #include <stdbool.h>
@@ -15,18 +15,18 @@
 #define ASCII_SIZE 256
 
 /**
- * @brief - node used for the main operations of the algorithm
- * @brief - it is used for the linked list process
- * @brief - it is used for the binary tree process
- * @param element points to the element that repeats itself throughout the
+ * @brief - Node used for the main operations of the algorithm
+ * @brief - It is used for the linked list process
+ * @brief - It is used for the binary tree process
+ * @param element Points to the element that repeats itself throughout the
  * file used in the program
- * @param frequency points to the frequency in which said element repeats
+ * @param frequency Points to the frequency in which said element repeats
  * itself in the file
- * @param next points to the next node in the linked list
- * @param left points to this node's left child
- * @param right points to this node's right child
- * @note - create it using create_node()
- * @note - destroy an instance of it using destroy_node()
+ * @param next Points to the next node in the linked list
+ * @param left Points to this node's left child
+ * @param right Points to this node's right child
+ * @note - Create it using create_node()
+ * @note - Destroy an instance of it using destroy_node()
  */
 typedef struct node {
   void* element;
@@ -37,68 +37,68 @@ typedef struct node {
 } node_t;
 
 /**
- * @brief - gets the name of the to be used file
- * @return - name of the file
- * @warning - exits program if not able to allocate memory for the string
- * @warning - allocates memory for the string that needs to be freed after use
+ * @brief - Gets the name of the file to be used
+ * @return - Name of the file
+ * @warning - Exits program if not able to allocate memory for the string
+ * @warning - Allocates memory for the string that needs to be freed after use
  * @category UTILITIES
  */
 char* get_file_name() {
-  // allocate memory for string
+  // Allocate memory for string
   char* file_name = malloc(FILE_NAME_SIZE * sizeof(char));
-  if (!file_name) {
+  if (file_name == NULL) {
     perror("ERR: could not allocate memory in get_file_name()\n");
     exit(EXIT_FAILURE);
   }
 
-  // gets user input for the name
-  printf("Enter the file name: ");
-  scanf("%s", file_name);
+  // Get user input for the name
+  printf("\nEnter the file name: ");
+  scanf(" %s", file_name);
 
-  // returns the name of the file
+  // Return the name of the file
   return file_name;
 }
 
 /**
- * @brief - opens file with the name given and reads its contents
- * @return - a uchar string with the file content
- * @warning - exits program if file is not opened
- * @warning - exits program if memory could not be allocated
- * @warning - allocates memory for the return string that has to be freed later
+ * @brief - Opens file with the given name and reads its contents
+ * @return - An unsigned char string containing the file content
+ * @warning - Exits program if file is not opened
+ * @warning - Exits program if memory could not be allocated
+ * @warning - Allocates memory for the return string that has to be freed later
  * @category UTILITIES
  */
 unsigned char* get_file_content(const char* file_name, size_t* file_size) {
-  // opens file for reading
+  // Open file for reading
   FILE* file = fopen(file_name, "rb");
-  if (!file) {
+  if (file == NULL) {
     perror("ERR: could not open file in get_file_contents()\n");
     exit(EXIT_FAILURE);
   }
 
-  // get file size
+  // Get file size
   fseek(file, 0, SEEK_END);
   *file_size = ftell(file);
   fseek(file, 0, SEEK_SET);
 
-  // allocate memory fot the contents
+  // Allocate memory for the contents
   unsigned char* content = malloc((*file_size + 1) * sizeof(unsigned char));
   if (!content) {
     perror("ERR: could not allocate memory in get_file_content()\n");
     exit(EXIT_FAILURE);
   }
 
-  // read the file content into the string
+  // Read the file content into the buffer
   fread(content, *file_size, sizeof(unsigned char), file);
   content[*file_size] = '\0';
 
-  // closes file and returns the content
+  // Close file and return the content
   fclose(file);
   return content;
 }
 
 /**
- * @brief - function for printing the file content
- * @param content content of the file
+ * @brief - Function for printing the file content
+ * @param content File content
  * @category DEBUG
  */
 void print_content(const unsigned char* content) {
@@ -106,34 +106,34 @@ void print_content(const unsigned char* content) {
 }
 
 /**
- * @brief - iterates through file and gets the frequency of every byte in it
- * @param content content of the file
- * @param file_size size of the file
- * @return a pointer to the table holding the byte frequencies
- * @warning exits program if memory could not be allocated
+ * @brief - Iterates through file and gets the frequency of every byte in it
+ * @param content Content of the file
+ * @param file_size Size of the file
+ * @return A pointer to the table holding the byte frequencies
+ * @warning Exits program if memory could not be allocated
  * @category ALGORITHM
  */
 size_t* get_frequencies(const unsigned char* content, const size_t file_size) {
-  // allocate memory for the frequencies list
+  // Allocate memory for the frequencies table
   size_t* frequencies = calloc(ASCII_SIZE, sizeof(size_t));
-  if (!frequencies) {
+  if (frequencies == NULL) {
     perror("ERR: could not allocate memory in get_frequencies()\n");
     exit(EXIT_FAILURE);
   }
 
-  //  gets frequencies of every byte of file by accessing its correspondent
-  //  integer value in the frequencies table
+  // Get frequencies of every byte in the file by accessing its corresponding
+  // index in the frequencies table
   for (size_t byte = 0; byte < file_size; byte++) {
     frequencies[content[byte]]++;
   }
 
-  // returns formed frequencies table
+  // Return formed frequencies table
   return frequencies;
 }
 
 /**
- * @brief function for printing the frequencies table
- * @param frequencies the frequencies table
+ * @brief - Prints the frequencies table
+ * @param frequencies The frequencies table
  * @category DEBUG
  */
 void print_frequencies(const size_t* frequencies) {
@@ -146,32 +146,25 @@ void print_frequencies(const size_t* frequencies) {
 }
 
 /**
- * @brief adds new element to the ordered list
- * @param element element being added to the list
- * @param frequency frequency in which the element appears in the file
- * @param head head of the current list
- * @return the head to the updated list
- * @warning allocates memory for a new node
+ * @brief Adds new element to the ordered list
+ * @param element Element being added to the list
+ * @param frequency Frequency in which the element appears in the file
+ * @param head Head of the current list
+ * @return The head to the updated list
+ * @warning Allocates memory for a new node
  * @category ALGORITHM
  */
-node_t* add_to_list_ordered(const unsigned char element, const size_t frequency,
-                            node_t* head) {
-  // allocates memory for new node and defines its variables to standard values
-  node_t* new_node = malloc(sizeof(node_t));
-  new_node->element = malloc(sizeof(unsigned char));
-  *(unsigned char*)new_node->element = element;
-  new_node->frequency = frequency;
-  new_node->next = NULL;
-  new_node->left = NULL;
-  new_node->right = NULL;
-
-  // insertion process
-  if (!head) {
+node_t* add_to_list_ordered(node_t* head, node_t* new_node) {
+  // Insertion process
+  if (head == NULL) {
+    // List is empty, new node becomes head
     head = new_node;
   } else if (head->frequency > new_node->frequency) {
+    // New node goes to the start of the list
     new_node->next = head;
     head = new_node;
   } else {
+    // New node goes to the middle or end of the list
     node_t* aux = head;
     while (aux->next && aux->next->frequency < new_node->frequency) {
       aux = aux->next;
@@ -180,37 +173,47 @@ node_t* add_to_list_ordered(const unsigned char element, const size_t frequency,
     aux->next = new_node;
   }
 
-  // returns head to updated list
+  // Returns head to updated list
   return head;
 }
 
 /**
- * @brief - adds all needed elements to a ordered linked list structure
- * @param frequencies the array that holds all char frequencies
- * @return - the head of the linked list
- * @warning - allocates memory for every different node used
+ * @brief - Adds all needed elements to a ordered linked list structure
+ * @param frequencies The array that holds all char frequencies
+ * @return - The head of the linked list
+ * @warning - Allocates memory for every different node used
  * @category ALGORITHM
  */
 node_t* create_list(const size_t* frequencies) {
-  // node that will represent the head of the list
+  // Node that will represent the head of the list
   node_t* head = NULL;
 
-  // iterates by every char in the ascii table
+  // Iterates by every char in the ascii table
   for (unsigned int index = 0; index < ASCII_SIZE; index++) {
-    // only adds elements to the list that appear in the file
+    // Only adds elements to the list that appear in the file
     if (frequencies[index] > 0) {
-      head =
-          add_to_list_ordered((unsigned char)index, frequencies[index], head);
+      // Allocates memory for new node and defines its variables to standard
+      // values
+      node_t* new_node = malloc(sizeof(node_t));
+      new_node->element = malloc(sizeof(unsigned char));
+      *(unsigned char*)new_node->element = index;
+      new_node->frequency = frequencies[index];
+      new_node->next = NULL;
+      new_node->left = NULL;
+      new_node->right = NULL;
+
+      // Adds new node to the list in an ordered manner
+      head = add_to_list_ordered(head, new_node);
     }
   }
 
-  // returns the head at the proper location
+  // Returns the head at the proper location
   return head;
 }
 
 /**
- * @brief function for printing the linked list
- * @param head the head of the linked list
+ * @brief Function for printing the linked list
+ * @param head The head of the linked list
  * @category DEBUG
  */
 void print_list(node_t* head) {
@@ -221,35 +224,169 @@ void print_list(node_t* head) {
   }
 }
 
+/**
+ * @brief - Fuses the first two nodes of the list into one for the tree
+ * creation step
+ * @param head Head of the current list
+ * @return Head of the updated list
+ * @warning - Allocates memory for the new node created
+ * @category ALGORITHM
+ */
+node_t* fuse_nodes(node_t* head) {
+  // Head must have at least two nodes
+  node_t* first = head;
+  node_t* second = head->next;
+  node_t* rest = second->next;  // Remainder of the list after the two smallest
+
+  // Create new internal node
+  node_t* new_node = malloc(sizeof(node_t));
+  if (new_node == NULL) {
+    perror("ERR: could not allocate memory in fuse_nodes()\n");
+    exit(EXIT_FAILURE);
+  }
+  new_node->element = malloc(sizeof(unsigned char));
+  if (new_node->element == NULL) {
+    perror("ERR: could not allocate memory for element in fuse_nodes()\n");
+    exit(EXIT_FAILURE);
+  }
+  *(unsigned char*)new_node->element = '*';  // Element for non-leaf nodes
+  new_node->frequency = first->frequency + second->frequency;
+  new_node->left = first;
+  new_node->right = second;
+  new_node->next = NULL;
+
+  // Detach first and second from the remaining list
+  first->next = NULL;
+  second->next = NULL;
+
+  // Insert the fused node into the remaining list (rest), preserving order
+  head = add_to_list_ordered(rest, new_node);
+  return head;
+}
+
+/**
+ * @brief - Creates the huffman tree from the linked list
+ * @param head Head of the current list
+ * @return Root of the created tree
+ * @category ALGORITHM
+ */
 node_t* create_tree(node_t* head) {
-  if (!head) {
+  if (head == NULL) {
     perror("ERR: empty list in create_tree()\n");
     exit(EXIT_FAILURE);
   }
+
+  // While the list has at least 2 elements
+  while (head->next != NULL) {
+    // Fuses the first two nodes into one for the tree step
+    head = fuse_nodes(head);
+  }
+
+  // Returns the single remaining node (root)
+  return head;
+}
+
+/**
+ * @brief - Frees the tree nodes (recursively)
+ * @param root Root of the tree
+ * @category CLEANUP
+ */
+void destroy_tree(node_t* root) {
+  if (root == NULL) return;
+  destroy_tree(root->left);
+  destroy_tree(root->right);
+  if (root->element) free(root->element);
+  free(root);
+}
+
+/**
+ * @brief - Prints the tree structure (recursively)
+ * @param root Root of the tree
+ * @param depth Current depth in the tree
+ * @category DEBUG
+ */
+void print_tree(node_t* root, int depth) {
+  if (root == NULL) return;
+
+  printf("\t%c: %zu (depth: %d)\n", *(unsigned char*)root->element,
+         root->frequency, depth);
+
+  print_tree(root->left, depth + 1);
+  print_tree(root->right, depth + 1);
+}
+
+int get_tree_height(node_t* root) {
+  if (root == NULL) return -1;
+
+  int left_height = get_tree_height(root->left);
+  int right_height = get_tree_height(root->right);
+
+  return (left_height > right_height ? left_height : right_height) + 1;
+}
+
+void generate_codes(node_t* root, char** codes, char* current_code, int depth) {
+  if (root == NULL) return;
+
+  // If it's a leaf node, store the code
+  if (root->left == NULL && root->right == NULL) {
+    current_code[depth] = '\0';  // Null-terminate the string
+    codes[*(unsigned char*)root->element] = strdup(current_code);
+    return;
+  }
+
+  // Traverse left
+  current_code[depth] = '0';
+  generate_codes(root->left, codes, current_code, depth + 1);
+
+  // Traverse right
+  current_code[depth] = '1';
+  generate_codes(root->right, codes, current_code, depth + 1);
 }
 
 int main() {
-  // declaring variables for the program
+  // Declaring variables for the program
+  int mode;
   char* file_name;
   unsigned char* content;
   size_t file_size;
   size_t* frequencies;
   node_t* head;
+  node_t* root;
+  int tree_height;
+  char** codes;
 
-  // getting the file, its content and its size
+  // Deciding if the user wants to either compress or extract the given file
+  printf("Press the key of the function you want to use:\n");
+  printf("\t1. Compress file\n");
+  printf("\t2. Extract file\n");
+  scanf("%d", &mode);
+
+  // Getting the file, its content and its size
   file_name = get_file_name();
   content = get_file_content(file_name, &file_size);
 
-  // setting up element frequencies
-  frequencies = get_frequencies(content, file_size);
+  if (mode == 1) {
+    // Setting up element frequencies
+    frequencies = get_frequencies(content, file_size);
 
-  // setting up the linked list
-  head = create_list(frequencies);
+    // Setting up the linked list
+    head = create_list(frequencies);
 
-  // freeing leftover memory
-  free(content);
-  free(file_name);
-  free(frequencies);
+    // Setting up the huffman tree
+    root = create_tree(head);
+    printf("Huffman Tree:\n");
+    print_tree(root, 0);
+
+    // Getting tree height
+    tree_height = get_tree_height(root);
+    printf("Tree height: %d\n", tree_height);
+
+    // Free tree and leftover memory
+    destroy_tree(root);
+    free(content);
+    free(file_name);
+    free(frequencies);
+  }
 
   return 0;
 }
