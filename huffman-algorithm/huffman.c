@@ -371,6 +371,159 @@ void print_codes(char** codes) {
   }
 }
 
+/**
+ * @brief - Changes the file extension of a given file name
+ * @param file_name The original file name
+ * @param new_extension The new extension to be added (including the dot)
+ * @category UTILITIES
+ */
+void change_file_extension(char* file_name, const char* new_extension) {
+  char* dot_position = strrchr(file_name, '.');
+  if (dot_position != NULL) {
+    *dot_position = '\0';  // Terminate the string at the dot
+  }
+  strcat(file_name, new_extension);  // Append the new extension
+}
+
+/**
+ * @brief - Writes the trash size and tree size to the compressed file
+ * @param file The file to write to
+ * @param trash The number of trash bits
+ * @param size The size of the tree in bytes
+ * @category ALGORITHM
+ */
+void write_trash_and_size(FILE* file, unsigned int trash, unsigned int size) {
+  // Combine trash and size into two bytes
+  unsigned short header = (trash << 13) | size;
+
+  // Write the two bytes to the file
+  fwrite(&header, sizeof(unsigned short), 1, file);
+}
+
+/**
+ * @brief - Writes the tree structure to the compressed file (recursively)
+ * @param file The file to write to
+ * @param root Root of the tree
+ * @category ALGORITHM
+ */
+void write_tree(FILE* file, node_t* root) {
+  if (root == NULL) return;
+
+  // If it's a leaf node, write the character (with escape if needed)
+  if (root->left == NULL && root->right == NULL) {
+    if (*(unsigned char*)root->element == '*' ||
+        *(unsigned char*)root->element == '\\') {
+      // Write escape character
+      unsigned char escape = '\\';
+      fwrite(&escape, sizeof(unsigned char), 1, file);
+    }
+    // Write the character
+    fwrite(root->element, sizeof(unsigned char), 1, file);
+  } else {
+    // Write internal node marker
+    unsigned char marker = '*';
+    fwrite(&marker, sizeof(unsigned char), 1, file);
+  }
+
+  // Recur for left and right children
+  write_tree(file, root->left);
+  write_tree(file, root->right);
+}
+
+/**
+ * @brief - Calculates the trash size based on file content and codes
+ * @param content Content of the file
+ * @param file_size Size of the file
+ * @param codes Array holding the generated codes
+ * @return The trash size in bits
+ * @category ALGORITHM
+ */
+unsigned int calculate_trash_size(char* content, size_t file_size,
+                                  char** codes) {
+  size_t total_bits = 0;
+
+  // Calculate total bits needed for the compressed data
+  for (size_t i = 0; i < file_size; i++) {
+    unsigned char byte = content[i];
+    total_bits += strlen(codes[byte]);
+  }
+
+  // Calculate trash size (bits not fitting into full bytes)
+  unsigned int trash_size = (8 - (total_bits % 8)) % 8;
+  return trash_size;
+}
+
+unsigned int calculate_tree_size(node_t* root) {
+  if (root == NULL) return 0;
+
+  // If it's a leaf node
+  if (root->left == NULL && root->right == NULL) {
+    // Check if we need to account for escape character
+    if (*(unsigned char*)root->element == '*' ||
+        *(unsigned char*)root->element == '\\') {
+      return 2;  // Escape character + actual character
+    }
+    return 1;  // Just the character
+  }
+
+  // Internal node
+  return 1 + calculate_tree_size(root->left) + calculate_tree_size(root->right);
+}
+
+void write_compressed_file(const char* file_name, const unsigned char* content,
+                           size_t file_size, char** codes, node_t* root) {
+  // Open file for writing
+  FILE* file = fopen(file_name, "wb");
+  if (file == NULL) {
+    perror("ERR: could not open file for writing in write_compressed_file()\n");
+    exit(EXIT_FAILURE);
+  }
+
+  // Calculate trash size and tree size
+  unsigned int trash_size =
+      calculate_trash_size((char*)content, file_size, codes);
+  unsigned int tree_size = calculate_tree_size(root);
+
+  // Write trash size and tree size to file
+  write_trash_and_size(file, trash_size, tree_size);
+
+  // Write tree structure to file
+  write_tree(file, root);
+
+  // Write compressed data to file
+  unsigned char buffer = 0;
+  int bit_count = 0;
+  for (size_t i = 0; i < file_size; i++) {
+    unsigned char byte = content[i];
+    char* code = codes[byte];
+
+    for (size_t j = 0; j < strlen(code); j++) {
+      // Add bit to buffer
+      buffer <<= 1;
+      if (code[j] == '1') {
+        buffer |= 1;
+      }
+      bit_count++;
+
+      // If buffer is full, write it to file
+      if (bit_count == 8) {
+        fwrite(&buffer, sizeof(unsigned char), 1, file);
+        buffer = 0;
+        bit_count = 0;
+      }
+    }
+  }
+
+  // Write remaining bits in buffer (if any)
+  if (bit_count > 0) {
+    buffer <<= (8 - bit_count);  // Shift remaining bits to the left
+    fwrite(&buffer, sizeof(unsigned char), 1, file);
+  }
+
+  // Close the file
+  fclose(file);
+}
+
 int main() {
   // Declaring variables for the program
   int mode;
@@ -393,6 +546,7 @@ int main() {
   file_name = get_file_name();
   content = get_file_content(file_name, &file_size);
 
+  // Compression mode
   if (mode == 1) {
     // Setting up element frequencies
     frequencies = get_frequencies(content, file_size);
@@ -412,13 +566,21 @@ int main() {
     // Generating codes
     codes = malloc(ASCII_SIZE * sizeof(char*));
     for (int i = 0; i < ASCII_SIZE; i++) {
+      // Allocate memory for each code string
+      // Each code can be at most tree_height bits long + 1 for null terminator
       codes[i] = calloc(tree_height + 1, sizeof(char));
     }
     char* current_code = calloc(tree_height + 1, sizeof(char));
     generate_codes(root, codes, current_code, 0);
     print_codes(codes);
 
-    // Free tree and leftover memory
+    // Writing compressed file
+    remove(file_name);
+    change_file_extension(file_name, ".huff");
+    printf("Compressed file will be saved as: %s\n", file_name);
+    write_compressed_file(file_name, content, file_size, codes, root);
+
+    // Free leftover memory
     destroy_tree(root);
     for (int i = 0; i < ASCII_SIZE; i++) {
       free(codes[i]);
@@ -428,6 +590,15 @@ int main() {
     free(content);
     free(file_name);
     free(frequencies);
+  } else if (mode == 2) {
+    // Extraction mode not implemented yet
+    printf("Extraction mode not implemented yet.\n");
+    free(content);
+    free(file_name);
+  } else {
+    printf("Invalid mode selected.\n");
+    free(content);
+    free(file_name);
   }
 
   return 0;
