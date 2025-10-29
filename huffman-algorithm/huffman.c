@@ -646,7 +646,7 @@ void decompress_data(FILE* input_file, FILE* output_file, node_t* root,
     bytes_read++;
     int bits_to_read = (bytes_read == data_size) ? 8 - trash_size : 8;
 
-    // Read bits from MSB to LSB
+    // Read bits from Most Significant Bit to Least Significant Bit
     for (int i = 7; i >= 8 - bits_to_read; i--) {
       int bit = (byte >> i) & 1;
 
