@@ -88,7 +88,7 @@ unsigned char* get_file_content(const char* file_name, size_t* file_size) {
   }
 
   // Read the file content into the buffer
-  fread(content, *file_size, sizeof(unsigned char), file);
+  fread(content, sizeof(unsigned char), *file_size, file);
   content[*file_size] = '\0';
 
   // Close file and return the content
@@ -315,6 +315,12 @@ void print_tree(node_t* root, int depth) {
   print_tree(root->right, depth + 1);
 }
 
+/**
+ * @brief - Gets the height of the tree (recursively)
+ * @param root Root of the tree
+ * @return Height of the tree
+ * @category DEBUG
+ */
 int get_tree_height(node_t* root) {
   if (root == NULL) return -1;
 
@@ -324,13 +330,21 @@ int get_tree_height(node_t* root) {
   return (left_height > right_height ? left_height : right_height) + 1;
 }
 
+/**
+ * @brief - Generates the binary codes for each element in the tree
+ * @param root Root of the tree
+ * @param codes Array to store the generated codes
+ * @param current_code Current code being formed
+ * @param depth Current depth in the tree
+ * @category ALGORITHM
+ */
 void generate_codes(node_t* root, char** codes, char* current_code, int depth) {
   if (root == NULL) return;
 
   // If it's a leaf node, store the code
   if (root->left == NULL && root->right == NULL) {
     current_code[depth] = '\0';  // Null-terminate the string
-    codes[*(unsigned char*)root->element] = strdup(current_code);
+    strcpy(codes[*(unsigned char*)root->element], current_code);
     return;
   }
 
@@ -341,6 +355,20 @@ void generate_codes(node_t* root, char** codes, char* current_code, int depth) {
   // Traverse right
   current_code[depth] = '1';
   generate_codes(root->right, codes, current_code, depth + 1);
+}
+
+/**
+ * @brief - Prints the generated codes
+ * @param codes Array holding the generated codes
+ * @category DEBUG
+ */
+void print_codes(char** codes) {
+  printf("Huffman Codes:\n");
+  for (int i = 0; i < ASCII_SIZE; i++) {
+    if (codes[i][0] != '\0') {
+      printf("\t%c: %s\n", i, codes[i]);
+    }
+  }
 }
 
 int main() {
@@ -381,8 +409,22 @@ int main() {
     tree_height = get_tree_height(root);
     printf("Tree height: %d\n", tree_height);
 
+    // Generating codes
+    codes = malloc(ASCII_SIZE * sizeof(char*));
+    for (int i = 0; i < ASCII_SIZE; i++) {
+      codes[i] = calloc(tree_height + 1, sizeof(char));
+    }
+    char* current_code = calloc(tree_height + 1, sizeof(char));
+    generate_codes(root, codes, current_code, 0);
+    print_codes(codes);
+
     // Free tree and leftover memory
     destroy_tree(root);
+    for (int i = 0; i < ASCII_SIZE; i++) {
+      free(codes[i]);
+    }
+    free(codes);
+    free(current_code);
     free(content);
     free(file_name);
     free(frequencies);
