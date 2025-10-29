@@ -1,0 +1,63 @@
+\doxysection{node Struct Reference}
+\hypertarget{structnode}{}\label{structnode}\index{node@{node}}
+
+
+
+\begin{DoxyItemize}
+\item Node used for the main operations of the algorithm 
+\end{DoxyItemize} 
+
+
+\doxysubsubsection*{Data Fields}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{structnode_ac5d37d2bd259acaf98a8d169904966d0}\label{structnode_ac5d37d2bd259acaf98a8d169904966d0} 
+void \texorpdfstring{$\ast$}{*} {\bfseries element}
+\item 
+\Hypertarget{structnode_a5ba3edc1f7681e498633f37eceb0cf61}\label{structnode_a5ba3edc1f7681e498633f37eceb0cf61} 
+size\+\_\+t {\bfseries frequency}
+\item 
+\Hypertarget{structnode_a0dc1b6470487aa86d9936e3cab8b95be}\label{structnode_a0dc1b6470487aa86d9936e3cab8b95be} 
+struct \mbox{\hyperlink{structnode}{node}} \texorpdfstring{$\ast$}{*} {\bfseries next}
+\item 
+\Hypertarget{structnode_af0a44f6d3fb08e7eb0f4c0900ec23e7d}\label{structnode_af0a44f6d3fb08e7eb0f4c0900ec23e7d} 
+struct \mbox{\hyperlink{structnode}{node}} \texorpdfstring{$\ast$}{*} {\bfseries left}
+\item 
+\Hypertarget{structnode_ac0aef301b237e3deef5a3a7dd7ac68d0}\label{structnode_ac0aef301b237e3deef5a3a7dd7ac68d0} 
+struct \mbox{\hyperlink{structnode}{node}} \texorpdfstring{$\ast$}{*} {\bfseries right}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+
+\begin{DoxyItemize}
+\item Node used for the main operations of the algorithm 
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item It is used for the linked list process
+\item It is used for the binary tree process 
+\begin{DoxyParams}{Parameters}
+{\em element} & Points to the element that repeats itself throughout the file used in the program \\
+\hline
+{\em frequency} & Points to the frequency in which said element repeats itself in the file \\
+\hline
+{\em next} & Points to the next node in the linked list \\
+\hline
+{\em left} & Points to this node\textquotesingle{}s left child \\
+\hline
+{\em right} & Points to this node\textquotesingle{}s right child \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+-\/ Create it using create\+\_\+node() 
+
+-\/ Destroy an instance of it using destroy\+\_\+node() 
+\end{DoxyNote}
+
+\end{DoxyItemize}
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{huffman_8c}{huffman.\+c}}\end{DoxyCompactItemize}

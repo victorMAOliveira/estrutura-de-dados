@@ -1,0 +1,660 @@
+\doxysection{huffman.\+c File Reference}
+\hypertarget{huffman_8c}{}\label{huffman_8c}\index{huffman.c@{huffman.c}}
+{\ttfamily \#include $<$stdbool.\+h$>$}\newline
+{\ttfamily \#include $<$stdio.\+h$>$}\newline
+{\ttfamily \#include $<$stdlib.\+h$>$}\newline
+{\ttfamily \#include $<$string.\+h$>$}\newline
+\doxysubsubsection*{Data Structures}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structnode}{node}}
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Node used for the main operations of the algorithm 
+\end{DoxyItemize}\end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{huffman_8c_aa7a7fd4622267bc1b90eca7fbf99c7dd}\label{huffman_8c_aa7a7fd4622267bc1b90eca7fbf99c7dd} 
+\#define {\bfseries FILE\+\_\+\+NAME\+\_\+\+SIZE}~200
+\item 
+\Hypertarget{huffman_8c_a4e6283a9534c307f78f3020b64e796aa}\label{huffman_8c_a4e6283a9534c307f78f3020b64e796aa} 
+\#define {\bfseries ASCII\+\_\+\+SIZE}~256
+\end{DoxyCompactItemize}
+\doxysubsubsection*{Typedefs}
+\begin{DoxyCompactItemize}
+\item 
+typedef struct \mbox{\hyperlink{structnode}{node}} \mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}}
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Node used for the main operations of the algorithm 
+\end{DoxyItemize}\end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+\Hypertarget{huffman_8c_a4fd90de0913ed15b0812918255559a55}\label{huffman_8c_a4fd90de0913ed15b0812918255559a55} 
+void {\bfseries log\+\_\+info} (const char \texorpdfstring{$\ast$}{*}message)
+\item 
+\Hypertarget{huffman_8c_aad4d6cb3f073a7fff67de1c1daa2c1f7}\label{huffman_8c_aad4d6cb3f073a7fff67de1c1daa2c1f7} 
+void {\bfseries log\+\_\+error} (const char \texorpdfstring{$\ast$}{*}message)
+\item 
+char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_ad02504f88657ab4eb5e0d39deb5f27c7}{get\+\_\+file\+\_\+name}} ()
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Gets the name of the file to be used 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+unsigned char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_a1249fe0d063c3f76bebe7e51facf1f6d}{get\+\_\+file\+\_\+content}} (const char \texorpdfstring{$\ast$}{*}file\+\_\+name, size\+\_\+t \texorpdfstring{$\ast$}{*}file\+\_\+size)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Opens file with the given name and reads its contents 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+size\+\_\+t \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_a348999659584e5a71ba8599f7795d5f8}{get\+\_\+frequencies}} (const unsigned char \texorpdfstring{$\ast$}{*}content, const size\+\_\+t file\+\_\+size)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Iterates through file and gets the frequency of every byte in it 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_a8947606b9f3431be1b155271ac8b65ef}{add\+\_\+to\+\_\+list\+\_\+ordered}} (\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}head, \mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}new\+\_\+node)
+\begin{DoxyCompactList}\small\item\em Adds new element to the ordered list. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_a619537db7ea4a7cd821ff991df979e18}{create\+\_\+list}} (const size\+\_\+t \texorpdfstring{$\ast$}{*}frequencies)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Adds all needed elements to a ordered linked list structure 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_afb11d081e73ca0f416a2a2a767d5788d}{fuse\+\_\+nodes}} (\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}head)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Fuses the first two nodes of the list into one for the tree creation step 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_ae1176bb2c3d7494567fc84416c5a6add}{create\+\_\+tree}} (\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}head)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Creates the huffman tree from the linked list 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_aa4b3529554984d5ff4a2c8c320a9322d}{destroy\+\_\+tree}} (\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Frees the tree nodes (recursively) 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+int \mbox{\hyperlink{huffman_8c_a657b5e28e6826a4136a7406231c87e84}{get\+\_\+tree\+\_\+height}} (\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Gets the height of the tree (recursively) 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_aa5875fbd7efe01bdd908a6475fb9485d}{generate\+\_\+codes}} (\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}codes, char \texorpdfstring{$\ast$}{*}current\+\_\+code, int depth)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Generates the binary codes for each element in the tree 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_aec354b1ba000fb4da26701556b761915}{change\+\_\+file\+\_\+extension}} (char \texorpdfstring{$\ast$}{*}file\+\_\+name, const char \texorpdfstring{$\ast$}{*}new\+\_\+extension)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Changes the file extension of a given file name 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_ac0b1d84a938d691016831f210953ceaf}{write\+\_\+trash\+\_\+and\+\_\+size}} (FILE \texorpdfstring{$\ast$}{*}file, unsigned int trash, unsigned int size)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Writes the trash size and tree size to the compressed file 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_a249f17596c20926c81e92528d33221af}{write\+\_\+tree}} (FILE \texorpdfstring{$\ast$}{*}file, \mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Writes the tree structure to the compressed file (recursively) 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+unsigned int \mbox{\hyperlink{huffman_8c_a16bdb4970e42f350481823735137ab08}{calculate\+\_\+trash\+\_\+size}} (const unsigned char \texorpdfstring{$\ast$}{*}content, size\+\_\+t file\+\_\+size, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}codes)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Calculates the trash size based on file content and codes 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+unsigned int \mbox{\hyperlink{huffman_8c_a02abdc139e4b8c0418b9b3e932e23a59}{calculate\+\_\+tree\+\_\+size}} (\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Calculates the size of the tree in bytes (recursively) 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_a8978f53b74d3f7cd1358ec0e0d9f3b6f}{write\+\_\+compressed\+\_\+file}} (const char \texorpdfstring{$\ast$}{*}file\+\_\+name, const unsigned char \texorpdfstring{$\ast$}{*}content, size\+\_\+t file\+\_\+size, char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}codes, \mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Writes the compressed file with header, tree, and data 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+char \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_a87e7967868659e5d4d13fae85f18ef81}{ask\+\_\+file\+\_\+extension}} ()
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Asks the user for the desired file extension 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+\Hypertarget{huffman_8c_a39f5190c4bbb94c4d470854781e91105}\label{huffman_8c_a39f5190c4bbb94c4d470854781e91105} 
+void {\bfseries display\+\_\+menu} ()
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Displays the main menu to the user 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_abde65c11a018e1600e9880a4e25413f7}{read\+\_\+header}} (FILE \texorpdfstring{$\ast$}{*}file, unsigned int \texorpdfstring{$\ast$}{*}trash\+\_\+size, unsigned int \texorpdfstring{$\ast$}{*}tree\+\_\+size)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Reads the header (trash and tree size) from compressed file 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} \mbox{\hyperlink{huffman_8c_a58f546e1797f7c11ac3a3ab9ef4b2a87}{reconstruct\+\_\+tree}} (FILE \texorpdfstring{$\ast$}{*}file)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Reconstructs the Huffman tree from the compressed file 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+void \mbox{\hyperlink{huffman_8c_a21c79537120e7c0f0a1582cab72f367c}{decompress\+\_\+data}} (FILE \texorpdfstring{$\ast$}{*}input\+\_\+file, FILE \texorpdfstring{$\ast$}{*}output\+\_\+file, \mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}root, unsigned int trash\+\_\+size, long data\+\_\+start\+\_\+pos)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Decompresses the data using the reconstructed Huffman tree 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+\Hypertarget{huffman_8c_a37aa078e607f8af8fbcc28664da9c0d6}\label{huffman_8c_a37aa078e607f8af8fbcc28664da9c0d6} 
+void {\bfseries extract\+\_\+file} (char \texorpdfstring{$\ast$}{*}file\+\_\+name)
+\begin{DoxyCompactList}\small\item\em 
+\begin{DoxyItemize}
+\item Main function for extracting compressed files 
+\end{DoxyItemize}\end{DoxyCompactList}\item 
+\Hypertarget{huffman_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}\label{huffman_8c_ae66f6b31b5ad750f1fe042a706a4e3d4} 
+int {\bfseries main} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\begin{DoxyAuthor}{Authors}
+Victor Amaral, Lorenzo Holanda, Lucitanea Lopes 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+28/10/2025 
+\end{DoxyDate}
+\begin{DoxyVersion}{Version}
+0.\+1
+\end{DoxyVersion}
+Implementation of Huffman\textquotesingle{}s compression algorithm in C 
+
+\label{doc-typedef-members}
+\Hypertarget{huffman_8c_doc-typedef-members}
+\doxysubsection{Typedef Documentation}
+\Hypertarget{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}\index{huffman.c@{huffman.c}!node\_t@{node\_t}}
+\index{node\_t@{node\_t}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{node\_t}{node\_t}}
+{\footnotesize\ttfamily \label{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9} 
+typedef struct \mbox{\hyperlink{structnode}{node}} \mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}}}
+
+
+
+
+\begin{DoxyItemize}
+\item Node used for the main operations of the algorithm 
+\end{DoxyItemize}
+
+
+\begin{DoxyItemize}
+\item It is used for the linked list process
+\item It is used for the binary tree process 
+\begin{DoxyParams}{Parameters}
+{\em element} & Points to the element that repeats itself throughout the file used in the program \\
+\hline
+{\em frequency} & Points to the frequency in which said element repeats itself in the file \\
+\hline
+{\em next} & Points to the next node in the linked list \\
+\hline
+{\em left} & Points to this node\textquotesingle{}s left child \\
+\hline
+{\em right} & Points to this node\textquotesingle{}s right child \\
+\hline
+\end{DoxyParams}
+\begin{DoxyNote}{Note}
+-\/ Create it using create\+\_\+node() 
+
+-\/ Destroy an instance of it using destroy\+\_\+node() 
+\end{DoxyNote}
+
+\end{DoxyItemize}
+
+\label{doc-func-members}
+\Hypertarget{huffman_8c_doc-func-members}
+\doxysubsection{Function Documentation}
+\Hypertarget{huffman_8c_a8947606b9f3431be1b155271ac8b65ef}\index{huffman.c@{huffman.c}!add\_to\_list\_ordered@{add\_to\_list\_ordered}}
+\index{add\_to\_list\_ordered@{add\_to\_list\_ordered}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{add\_to\_list\_ordered()}{add\_to\_list\_ordered()}}
+{\footnotesize\ttfamily \label{huffman_8c_a8947606b9f3431be1b155271ac8b65ef} 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} add\+\_\+to\+\_\+list\+\_\+ordered (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{head}{, }\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{new\+\_\+node}{}\end{DoxyParamCaption})}
+
+
+
+Adds new element to the ordered list. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em element} & Element being added to the list \\
+\hline
+{\em frequency} & Frequency in which the element appears in the file \\
+\hline
+{\em head} & Head of the current list \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The head to the updated list 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+Allocates memory for a new node 
+\end{DoxyWarning}
+\Hypertarget{huffman_8c_a87e7967868659e5d4d13fae85f18ef81}\index{huffman.c@{huffman.c}!ask\_file\_extension@{ask\_file\_extension}}
+\index{ask\_file\_extension@{ask\_file\_extension}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{ask\_file\_extension()}{ask\_file\_extension()}}
+{\footnotesize\ttfamily \label{huffman_8c_a87e7967868659e5d4d13fae85f18ef81} 
+char \texorpdfstring{$\ast$}{*} ask\+\_\+file\+\_\+extension (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Asks the user for the desired file extension 
+\end{DoxyItemize}
+
+\begin{DoxyReturn}{Returns}
+-\/ The file extension provided by the user 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+-\/ Exits program if not able to allocate memory for the string 
+
+-\/ Allocates memory for the string that needs to be freed after use 
+\end{DoxyWarning}
+\Hypertarget{huffman_8c_a16bdb4970e42f350481823735137ab08}\index{huffman.c@{huffman.c}!calculate\_trash\_size@{calculate\_trash\_size}}
+\index{calculate\_trash\_size@{calculate\_trash\_size}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{calculate\_trash\_size()}{calculate\_trash\_size()}}
+{\footnotesize\ttfamily \label{huffman_8c_a16bdb4970e42f350481823735137ab08} 
+unsigned int calculate\+\_\+trash\+\_\+size (\begin{DoxyParamCaption}\item[{const unsigned char \texorpdfstring{$\ast$}{*}}]{content}{, }\item[{size\+\_\+t}]{file\+\_\+size}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{codes}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Calculates the trash size based on file content and codes 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em content} & Content of the file \\
+\hline
+{\em file\+\_\+size} & Size of the file \\
+\hline
+{\em codes} & Array holding the generated codes \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The trash size in bits 
+\end{DoxyReturn}
+\Hypertarget{huffman_8c_a02abdc139e4b8c0418b9b3e932e23a59}\index{huffman.c@{huffman.c}!calculate\_tree\_size@{calculate\_tree\_size}}
+\index{calculate\_tree\_size@{calculate\_tree\_size}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{calculate\_tree\_size()}{calculate\_tree\_size()}}
+{\footnotesize\ttfamily \label{huffman_8c_a02abdc139e4b8c0418b9b3e932e23a59} 
+unsigned int calculate\+\_\+tree\+\_\+size (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Calculates the size of the tree in bytes (recursively) 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & Root of the tree \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Size of the tree in bytes 
+\end{DoxyReturn}
+\Hypertarget{huffman_8c_aec354b1ba000fb4da26701556b761915}\index{huffman.c@{huffman.c}!change\_file\_extension@{change\_file\_extension}}
+\index{change\_file\_extension@{change\_file\_extension}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{change\_file\_extension()}{change\_file\_extension()}}
+{\footnotesize\ttfamily \label{huffman_8c_aec354b1ba000fb4da26701556b761915} 
+void change\+\_\+file\+\_\+extension (\begin{DoxyParamCaption}\item[{char \texorpdfstring{$\ast$}{*}}]{file\+\_\+name}{, }\item[{const char \texorpdfstring{$\ast$}{*}}]{new\+\_\+extension}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Changes the file extension of a given file name 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+\_\+name} & The original file name \\
+\hline
+{\em new\+\_\+extension} & The new extension to be added (including the dot) \\
+\hline
+\end{DoxyParams}
+\Hypertarget{huffman_8c_a619537db7ea4a7cd821ff991df979e18}\index{huffman.c@{huffman.c}!create\_list@{create\_list}}
+\index{create\_list@{create\_list}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{create\_list()}{create\_list()}}
+{\footnotesize\ttfamily \label{huffman_8c_a619537db7ea4a7cd821ff991df979e18} 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} create\+\_\+list (\begin{DoxyParamCaption}\item[{const size\+\_\+t \texorpdfstring{$\ast$}{*}}]{frequencies}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Adds all needed elements to a ordered linked list structure 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em frequencies} & The array that holds all char frequencies \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+-\/ The head of the linked list 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+-\/ Allocates memory for every different node used 
+\end{DoxyWarning}
+\Hypertarget{huffman_8c_ae1176bb2c3d7494567fc84416c5a6add}\index{huffman.c@{huffman.c}!create\_tree@{create\_tree}}
+\index{create\_tree@{create\_tree}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{create\_tree()}{create\_tree()}}
+{\footnotesize\ttfamily \label{huffman_8c_ae1176bb2c3d7494567fc84416c5a6add} 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} create\+\_\+tree (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{head}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Creates the huffman tree from the linked list 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em head} & Head of the current list \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Root of the created tree 
+\end{DoxyReturn}
+\Hypertarget{huffman_8c_a21c79537120e7c0f0a1582cab72f367c}\index{huffman.c@{huffman.c}!decompress\_data@{decompress\_data}}
+\index{decompress\_data@{decompress\_data}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{decompress\_data()}{decompress\_data()}}
+{\footnotesize\ttfamily \label{huffman_8c_a21c79537120e7c0f0a1582cab72f367c} 
+void decompress\+\_\+data (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{input\+\_\+file}{, }\item[{FILE \texorpdfstring{$\ast$}{*}}]{output\+\_\+file}{, }\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root}{, }\item[{unsigned int}]{trash\+\_\+size}{, }\item[{long}]{data\+\_\+start\+\_\+pos}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Decompresses the data using the reconstructed Huffman tree 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em input\+\_\+file} & Input compressed file \\
+\hline
+{\em output\+\_\+file} & Output decompressed file \\
+\hline
+{\em root} & Root of the Huffman tree \\
+\hline
+{\em trash\+\_\+size} & Number of trash bits \\
+\hline
+{\em file\+\_\+size} & Size of the compressed file \\
+\hline
+\end{DoxyParams}
+\Hypertarget{huffman_8c_aa4b3529554984d5ff4a2c8c320a9322d}\index{huffman.c@{huffman.c}!destroy\_tree@{destroy\_tree}}
+\index{destroy\_tree@{destroy\_tree}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{destroy\_tree()}{destroy\_tree()}}
+{\footnotesize\ttfamily \label{huffman_8c_aa4b3529554984d5ff4a2c8c320a9322d} 
+void destroy\+\_\+tree (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Frees the tree nodes (recursively) 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & Root of the tree \\
+\hline
+\end{DoxyParams}
+\Hypertarget{huffman_8c_afb11d081e73ca0f416a2a2a767d5788d}\index{huffman.c@{huffman.c}!fuse\_nodes@{fuse\_nodes}}
+\index{fuse\_nodes@{fuse\_nodes}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{fuse\_nodes()}{fuse\_nodes()}}
+{\footnotesize\ttfamily \label{huffman_8c_afb11d081e73ca0f416a2a2a767d5788d} 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} fuse\+\_\+nodes (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{head}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Fuses the first two nodes of the list into one for the tree creation step 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em head} & Head of the current list \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Head of the updated list 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+-\/ Allocates memory for the new node created 
+\end{DoxyWarning}
+\Hypertarget{huffman_8c_aa5875fbd7efe01bdd908a6475fb9485d}\index{huffman.c@{huffman.c}!generate\_codes@{generate\_codes}}
+\index{generate\_codes@{generate\_codes}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{generate\_codes()}{generate\_codes()}}
+{\footnotesize\ttfamily \label{huffman_8c_aa5875fbd7efe01bdd908a6475fb9485d} 
+void generate\+\_\+codes (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{codes}{, }\item[{char \texorpdfstring{$\ast$}{*}}]{current\+\_\+code}{, }\item[{int}]{depth}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Generates the binary codes for each element in the tree 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & Root of the tree \\
+\hline
+{\em codes} & Array to store the generated codes \\
+\hline
+{\em current\+\_\+code} & Current code being formed \\
+\hline
+{\em depth} & Current depth in the tree \\
+\hline
+\end{DoxyParams}
+\Hypertarget{huffman_8c_a1249fe0d063c3f76bebe7e51facf1f6d}\index{huffman.c@{huffman.c}!get\_file\_content@{get\_file\_content}}
+\index{get\_file\_content@{get\_file\_content}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{get\_file\_content()}{get\_file\_content()}}
+{\footnotesize\ttfamily \label{huffman_8c_a1249fe0d063c3f76bebe7e51facf1f6d} 
+unsigned char \texorpdfstring{$\ast$}{*} get\+\_\+file\+\_\+content (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{file\+\_\+name}{, }\item[{size\+\_\+t \texorpdfstring{$\ast$}{*}}]{file\+\_\+size}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Opens file with the given name and reads its contents 
+\end{DoxyItemize}
+
+\begin{DoxyReturn}{Returns}
+-\/ An unsigned char string containing the file content 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+-\/ Exits program if file is not opened 
+
+-\/ Exits program if memory could not be allocated 
+
+-\/ Allocates memory for the return string that has to be freed later 
+\end{DoxyWarning}
+\Hypertarget{huffman_8c_ad02504f88657ab4eb5e0d39deb5f27c7}\index{huffman.c@{huffman.c}!get\_file\_name@{get\_file\_name}}
+\index{get\_file\_name@{get\_file\_name}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{get\_file\_name()}{get\_file\_name()}}
+{\footnotesize\ttfamily \label{huffman_8c_ad02504f88657ab4eb5e0d39deb5f27c7} 
+char \texorpdfstring{$\ast$}{*} get\+\_\+file\+\_\+name (\begin{DoxyParamCaption}{}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Gets the name of the file to be used 
+\end{DoxyItemize}
+
+\begin{DoxyReturn}{Returns}
+-\/ Name of the file 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+-\/ Exits program if not able to allocate memory for the string 
+
+-\/ Allocates memory for the string that needs to be freed after use 
+\end{DoxyWarning}
+\Hypertarget{huffman_8c_a348999659584e5a71ba8599f7795d5f8}\index{huffman.c@{huffman.c}!get\_frequencies@{get\_frequencies}}
+\index{get\_frequencies@{get\_frequencies}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{get\_frequencies()}{get\_frequencies()}}
+{\footnotesize\ttfamily \label{huffman_8c_a348999659584e5a71ba8599f7795d5f8} 
+size\+\_\+t \texorpdfstring{$\ast$}{*} get\+\_\+frequencies (\begin{DoxyParamCaption}\item[{const unsigned char \texorpdfstring{$\ast$}{*}}]{content}{, }\item[{const size\+\_\+t}]{file\+\_\+size}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Iterates through file and gets the frequency of every byte in it 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em content} & Content of the file \\
+\hline
+{\em file\+\_\+size} & Size of the file \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A pointer to the table holding the byte frequencies 
+\end{DoxyReturn}
+\begin{DoxyWarning}{Warning}
+Exits program if memory could not be allocated 
+\end{DoxyWarning}
+\Hypertarget{huffman_8c_a657b5e28e6826a4136a7406231c87e84}\index{huffman.c@{huffman.c}!get\_tree\_height@{get\_tree\_height}}
+\index{get\_tree\_height@{get\_tree\_height}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{get\_tree\_height()}{get\_tree\_height()}}
+{\footnotesize\ttfamily \label{huffman_8c_a657b5e28e6826a4136a7406231c87e84} 
+int get\+\_\+tree\+\_\+height (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Gets the height of the tree (recursively) 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em root} & Root of the tree \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Height of the tree 
+\end{DoxyReturn}
+\Hypertarget{huffman_8c_abde65c11a018e1600e9880a4e25413f7}\index{huffman.c@{huffman.c}!read\_header@{read\_header}}
+\index{read\_header@{read\_header}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{read\_header()}{read\_header()}}
+{\footnotesize\ttfamily \label{huffman_8c_abde65c11a018e1600e9880a4e25413f7} 
+void read\+\_\+header (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{unsigned int \texorpdfstring{$\ast$}{*}}]{trash\+\_\+size}{, }\item[{unsigned int \texorpdfstring{$\ast$}{*}}]{tree\+\_\+size}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Reads the header (trash and tree size) from compressed file 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & The file to read from \\
+\hline
+{\em trash\+\_\+size} & Pointer to store trash size \\
+\hline
+{\em tree\+\_\+size} & Pointer to store tree size \\
+\hline
+\end{DoxyParams}
+\Hypertarget{huffman_8c_a58f546e1797f7c11ac3a3ab9ef4b2a87}\index{huffman.c@{huffman.c}!reconstruct\_tree@{reconstruct\_tree}}
+\index{reconstruct\_tree@{reconstruct\_tree}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{reconstruct\_tree()}{reconstruct\_tree()}}
+{\footnotesize\ttfamily \label{huffman_8c_a58f546e1797f7c11ac3a3ab9ef4b2a87} 
+\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*} reconstruct\+\_\+tree (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Reconstructs the Huffman tree from the compressed file 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & The file to read from \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Root of the reconstructed tree 
+\end{DoxyReturn}
+\Hypertarget{huffman_8c_a8978f53b74d3f7cd1358ec0e0d9f3b6f}\index{huffman.c@{huffman.c}!write\_compressed\_file@{write\_compressed\_file}}
+\index{write\_compressed\_file@{write\_compressed\_file}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{write\_compressed\_file()}{write\_compressed\_file()}}
+{\footnotesize\ttfamily \label{huffman_8c_a8978f53b74d3f7cd1358ec0e0d9f3b6f} 
+void write\+\_\+compressed\+\_\+file (\begin{DoxyParamCaption}\item[{const char \texorpdfstring{$\ast$}{*}}]{file\+\_\+name}{, }\item[{const unsigned char \texorpdfstring{$\ast$}{*}}]{content}{, }\item[{size\+\_\+t}]{file\+\_\+size}{, }\item[{char \texorpdfstring{$\ast$}{*}\texorpdfstring{$\ast$}{*}}]{codes}{, }\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Writes the compressed file with header, tree, and data 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+\_\+name} & Name of the file to write to \\
+\hline
+{\em content} & Content of the original file \\
+\hline
+{\em file\+\_\+size} & Size of the original file \\
+\hline
+{\em codes} & Array holding the generated codes \\
+\hline
+{\em root} & Root of the Huffman tree \\
+\hline
+\end{DoxyParams}
+\Hypertarget{huffman_8c_ac0b1d84a938d691016831f210953ceaf}\index{huffman.c@{huffman.c}!write\_trash\_and\_size@{write\_trash\_and\_size}}
+\index{write\_trash\_and\_size@{write\_trash\_and\_size}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{write\_trash\_and\_size()}{write\_trash\_and\_size()}}
+{\footnotesize\ttfamily \label{huffman_8c_ac0b1d84a938d691016831f210953ceaf} 
+void write\+\_\+trash\+\_\+and\+\_\+size (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{unsigned int}]{trash}{, }\item[{unsigned int}]{size}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Writes the trash size and tree size to the compressed file 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & The file to write to \\
+\hline
+{\em trash} & The number of trash bits \\
+\hline
+{\em size} & The size of the tree in bytes \\
+\hline
+\end{DoxyParams}
+\Hypertarget{huffman_8c_a249f17596c20926c81e92528d33221af}\index{huffman.c@{huffman.c}!write\_tree@{write\_tree}}
+\index{write\_tree@{write\_tree}!huffman.c@{huffman.c}}
+\doxysubsubsection{\texorpdfstring{write\_tree()}{write\_tree()}}
+{\footnotesize\ttfamily \label{huffman_8c_a249f17596c20926c81e92528d33221af} 
+void write\+\_\+tree (\begin{DoxyParamCaption}\item[{FILE \texorpdfstring{$\ast$}{*}}]{file}{, }\item[{\mbox{\hyperlink{huffman_8c_a7c02633e18d6aa5f58539b75f08753d9}{node\+\_\+t}} \texorpdfstring{$\ast$}{*}}]{root}{}\end{DoxyParamCaption})}
+
+
+
+
+\begin{DoxyItemize}
+\item Writes the tree structure to the compressed file (recursively) 
+\end{DoxyItemize}
+
+
+\begin{DoxyParams}{Parameters}
+{\em file} & The file to write to \\
+\hline
+{\em root} & Root of the tree \\
+\hline
+\end{DoxyParams}

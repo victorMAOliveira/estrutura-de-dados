@@ -36,6 +36,9 @@ typedef struct node {
   struct node* right;
 } node_t;
 
+void log_info(const char* message) { printf("%s\n", message); }
+void log_error(const char* message) { fprintf(stderr, "Error: %s\n", message); }
+
 /**
  * @brief - Gets the name of the file to be used
  * @return - Name of the file
@@ -47,12 +50,12 @@ char* get_file_name() {
   // Allocate memory for string
   char* file_name = malloc(FILE_NAME_SIZE * sizeof(char));
   if (file_name == NULL) {
-    perror("ERR: could not allocate memory in get_file_name()\n");
+    log_error("Could not allocate memory for file name");
     exit(EXIT_FAILURE);
   }
 
   // Get user input for the name
-  printf("\nEnter the file name: ");
+  printf("Enter the file name: ");
   scanf(" %s", file_name);
 
   // Return the name of the file
@@ -71,7 +74,7 @@ unsigned char* get_file_content(const char* file_name, size_t* file_size) {
   // Open file for reading
   FILE* file = fopen(file_name, "rb");
   if (file == NULL) {
-    perror("ERR: could not open file in get_file_contents()\n");
+    log_error("Could not open file");
     exit(EXIT_FAILURE);
   }
 
@@ -83,26 +86,25 @@ unsigned char* get_file_content(const char* file_name, size_t* file_size) {
   // Allocate memory for the contents
   unsigned char* content = malloc((*file_size + 1) * sizeof(unsigned char));
   if (!content) {
-    perror("ERR: could not allocate memory in get_file_content()\n");
+    log_error("Could not allocate memory for file content");
+    fclose(file);
     exit(EXIT_FAILURE);
   }
 
   // Read the file content into the buffer
-  fread(content, sizeof(unsigned char), *file_size, file);
+  size_t bytes_read = fread(content, sizeof(unsigned char), *file_size, file);
+  if (bytes_read != *file_size) {
+    log_error("Could not read entire file");
+    free(content);
+    fclose(file);
+    exit(EXIT_FAILURE);
+  }
+
   content[*file_size] = '\0';
 
   // Close file and return the content
   fclose(file);
   return content;
-}
-
-/**
- * @brief - Function for printing the file content
- * @param content File content
- * @category DEBUG
- */
-void print_content(const unsigned char* content) {
-  printf("file content:\n%s\n", content);
 }
 
 /**
@@ -117,7 +119,7 @@ size_t* get_frequencies(const unsigned char* content, const size_t file_size) {
   // Allocate memory for the frequencies table
   size_t* frequencies = calloc(ASCII_SIZE, sizeof(size_t));
   if (frequencies == NULL) {
-    perror("ERR: could not allocate memory in get_frequencies()\n");
+    log_error("Could not allocate memory for frequencies table");
     exit(EXIT_FAILURE);
   }
 
@@ -129,20 +131,6 @@ size_t* get_frequencies(const unsigned char* content, const size_t file_size) {
 
   // Return formed frequencies table
   return frequencies;
-}
-
-/**
- * @brief - Prints the frequencies table
- * @param frequencies The frequencies table
- * @category DEBUG
- */
-void print_frequencies(const size_t* frequencies) {
-  printf("frequencies:\n");
-  for (unsigned int index = 0; index < ASCII_SIZE; index++) {
-    if (frequencies[index] > 0) {
-      printf("\t%c: %zu\n", index, frequencies[index]);
-    }
-  }
 }
 
 /**
@@ -195,8 +183,19 @@ node_t* create_list(const size_t* frequencies) {
       // Allocates memory for new node and defines its variables to standard
       // values
       node_t* new_node = malloc(sizeof(node_t));
+      if (!new_node) {
+        log_error("Could not allocate memory for node");
+        exit(EXIT_FAILURE);
+      }
+
       new_node->element = malloc(sizeof(unsigned char));
-      *(unsigned char*)new_node->element = index;
+      if (!new_node->element) {
+        log_error("Could not allocate memory for element");
+        free(new_node);
+        exit(EXIT_FAILURE);
+      }
+
+      *(unsigned char*)new_node->element = (unsigned char)index;
       new_node->frequency = frequencies[index];
       new_node->next = NULL;
       new_node->left = NULL;
@@ -212,19 +211,6 @@ node_t* create_list(const size_t* frequencies) {
 }
 
 /**
- * @brief Function for printing the linked list
- * @param head The head of the linked list
- * @category DEBUG
- */
-void print_list(node_t* head) {
-  printf("linked list:\n");
-  while (head) {
-    printf("\t%c: %zu\n", *(unsigned char*)head->element, head->frequency);
-    head = head->next;
-  }
-}
-
-/**
  * @brief - Fuses the first two nodes of the list into one for the tree
  * creation step
  * @param head Head of the current list
@@ -234,6 +220,11 @@ void print_list(node_t* head) {
  */
 node_t* fuse_nodes(node_t* head) {
   // Head must have at least two nodes
+  if (!head || !head->next) {
+    log_error("List too short to fuse nodes");
+    return head;
+  }
+
   node_t* first = head;
   node_t* second = head->next;
   node_t* rest = second->next;  // Remainder of the list after the two smallest
@@ -241,12 +232,13 @@ node_t* fuse_nodes(node_t* head) {
   // Create new internal node
   node_t* new_node = malloc(sizeof(node_t));
   if (new_node == NULL) {
-    perror("ERR: could not allocate memory in fuse_nodes()\n");
+    log_error("Could not allocate memory for node fusion");
     exit(EXIT_FAILURE);
   }
   new_node->element = malloc(sizeof(unsigned char));
   if (new_node->element == NULL) {
-    perror("ERR: could not allocate memory for element in fuse_nodes()\n");
+    log_error("Could not allocate memory for element in node fusion");
+    free(new_node);
     exit(EXIT_FAILURE);
   }
   *(unsigned char*)new_node->element = '*';  // Element for non-leaf nodes
@@ -272,7 +264,7 @@ node_t* fuse_nodes(node_t* head) {
  */
 node_t* create_tree(node_t* head) {
   if (head == NULL) {
-    perror("ERR: empty list in create_tree()\n");
+    log_error("Empty list - cannot create tree");
     exit(EXIT_FAILURE);
   }
 
@@ -300,22 +292,6 @@ void destroy_tree(node_t* root) {
 }
 
 /**
- * @brief - Prints the tree structure (recursively)
- * @param root Root of the tree
- * @param depth Current depth in the tree
- * @category DEBUG
- */
-void print_tree(node_t* root, int depth) {
-  if (root == NULL) return;
-
-  printf("\t%c: %zu (depth: %d)\n", *(unsigned char*)root->element,
-         root->frequency, depth);
-
-  print_tree(root->left, depth + 1);
-  print_tree(root->right, depth + 1);
-}
-
-/**
  * @brief - Gets the height of the tree (recursively)
  * @param root Root of the tree
  * @return Height of the tree
@@ -323,6 +299,7 @@ void print_tree(node_t* root, int depth) {
  */
 int get_tree_height(node_t* root) {
   if (root == NULL) return -1;
+  if (root->left == NULL && root->right == NULL) return 0;
 
   int left_height = get_tree_height(root->left);
   int right_height = get_tree_height(root->right);
@@ -344,30 +321,21 @@ void generate_codes(node_t* root, char** codes, char* current_code, int depth) {
   // If it's a leaf node, store the code
   if (root->left == NULL && root->right == NULL) {
     current_code[depth] = '\0';  // Null-terminate the string
-    strcpy(codes[*(unsigned char*)root->element], current_code);
+    unsigned char element = *(unsigned char*)root->element;
+    strcpy(codes[element], current_code);
     return;
   }
 
   // Traverse left
-  current_code[depth] = '0';
-  generate_codes(root->left, codes, current_code, depth + 1);
+  if (root->left != NULL) {
+    current_code[depth] = '0';
+    generate_codes(root->left, codes, current_code, depth + 1);
+  }
 
   // Traverse right
-  current_code[depth] = '1';
-  generate_codes(root->right, codes, current_code, depth + 1);
-}
-
-/**
- * @brief - Prints the generated codes
- * @param codes Array holding the generated codes
- * @category DEBUG
- */
-void print_codes(char** codes) {
-  printf("Huffman Codes:\n");
-  for (int i = 0; i < ASCII_SIZE; i++) {
-    if (codes[i][0] != '\0') {
-      printf("\t%c: %s\n", i, codes[i]);
-    }
+  if (root->right != NULL) {
+    current_code[depth] = '1';
+    generate_codes(root->right, codes, current_code, depth + 1);
   }
 }
 
@@ -394,7 +362,14 @@ void change_file_extension(char* file_name, const char* new_extension) {
  */
 void write_trash_and_size(FILE* file, unsigned int trash, unsigned int size) {
   // Combine trash and size into two bytes
-  unsigned short header = (trash << 13) | size;
+  if (trash > 7) {
+    trash = 7;
+  }
+  if (size > 0x1FFF) {
+    size = 0x1FFF;
+  }
+
+  unsigned short header = (trash << 13) | (size & 0x1FFF);
 
   // Write the two bytes to the file
   fwrite(&header, sizeof(unsigned short), 1, file);
@@ -411,23 +386,22 @@ void write_tree(FILE* file, node_t* root) {
 
   // If it's a leaf node, write the character (with escape if needed)
   if (root->left == NULL && root->right == NULL) {
-    if (*(unsigned char*)root->element == '*' ||
-        *(unsigned char*)root->element == '\\') {
+    unsigned char element = *(unsigned char*)root->element;
+    if (element == '*' || element == '\\') {
       // Write escape character
       unsigned char escape = '\\';
       fwrite(&escape, sizeof(unsigned char), 1, file);
     }
     // Write the character
-    fwrite(root->element, sizeof(unsigned char), 1, file);
+    fwrite(&element, sizeof(unsigned char), 1, file);
   } else {
     // Write internal node marker
     unsigned char marker = '*';
     fwrite(&marker, sizeof(unsigned char), 1, file);
+    // Recur for left and right children
+    write_tree(file, root->left);
+    write_tree(file, root->right);
   }
-
-  // Recur for left and right children
-  write_tree(file, root->left);
-  write_tree(file, root->right);
 }
 
 /**
@@ -438,8 +412,8 @@ void write_tree(FILE* file, node_t* root) {
  * @return The trash size in bits
  * @category ALGORITHM
  */
-unsigned int calculate_trash_size(char* content, size_t file_size,
-                                  char** codes) {
+unsigned int calculate_trash_size(const unsigned char* content,
+                                  size_t file_size, char** codes) {
   size_t total_bits = 0;
 
   // Calculate total bits needed for the compressed data
@@ -453,14 +427,20 @@ unsigned int calculate_trash_size(char* content, size_t file_size,
   return trash_size;
 }
 
+/**
+ * @brief - Calculates the size of the tree in bytes (recursively)
+ * @param root Root of the tree
+ * @return Size of the tree in bytes
+ * @category ALGORITHM
+ */
 unsigned int calculate_tree_size(node_t* root) {
   if (root == NULL) return 0;
 
   // If it's a leaf node
   if (root->left == NULL && root->right == NULL) {
     // Check if we need to account for escape character
-    if (*(unsigned char*)root->element == '*' ||
-        *(unsigned char*)root->element == '\\') {
+    unsigned char element = *(unsigned char*)root->element;
+    if (element == '*' || element == '\\') {
       return 2;  // Escape character + actual character
     }
     return 1;  // Just the character
@@ -470,18 +450,26 @@ unsigned int calculate_tree_size(node_t* root) {
   return 1 + calculate_tree_size(root->left) + calculate_tree_size(root->right);
 }
 
+/**
+ * @brief - Writes the compressed file with header, tree, and data
+ * @param file_name Name of the file to write to
+ * @param content Content of the original file
+ * @param file_size Size of the original file
+ * @param codes Array holding the generated codes
+ * @param root Root of the Huffman tree
+ * @category ALGORITHM
+ */
 void write_compressed_file(const char* file_name, const unsigned char* content,
                            size_t file_size, char** codes, node_t* root) {
   // Open file for writing
   FILE* file = fopen(file_name, "wb");
   if (file == NULL) {
-    perror("ERR: could not open file for writing in write_compressed_file()\n");
+    log_error("Could not open file for writing");
     exit(EXIT_FAILURE);
   }
 
   // Calculate trash size and tree size
-  unsigned int trash_size =
-      calculate_trash_size((char*)content, file_size, codes);
+  unsigned int trash_size = calculate_trash_size(content, file_size, codes);
   unsigned int tree_size = calculate_tree_size(root);
 
   // Write trash size and tree size to file
@@ -524,6 +512,230 @@ void write_compressed_file(const char* file_name, const unsigned char* content,
   fclose(file);
 }
 
+/**
+ * @brief - Asks the user for the desired file extension
+ * @return - The file extension provided by the user
+ * @warning - Exits program if not able to allocate memory for the string
+ * @warning - Allocates memory for the string that needs to be freed after use
+ * @category UTILITIES
+ */
+char* ask_file_extension() {
+  // Allocate memory for string
+  char* file_extension = malloc(10 * sizeof(char));
+  if (file_extension == NULL) {
+    log_error("Could not allocate memory for file extension");
+    exit(EXIT_FAILURE);
+  }
+
+  // Get user input for the extension
+  scanf(" %s", file_extension);
+
+  // Return the file extension
+  return file_extension;
+}
+
+/**
+ * @brief - Displays the main menu to the user
+ * @category UTILITIES
+ */
+void display_menu() {
+  printf("Select operation mode:\n");
+  printf("1. Compress file\n");
+  printf("2. Extract file\n");
+  printf("Enter your choice: ");
+}
+
+/**
+ * @brief - Reads the header (trash and tree size) from compressed file
+ * @param file The file to read from
+ * @param trash_size Pointer to store trash size
+ * @param tree_size Pointer to store tree size
+ * @category ALGORITHM
+ */
+void read_header(FILE* file, unsigned int* trash_size,
+                 unsigned int* tree_size) {
+  unsigned short header;
+  if (fread(&header, sizeof(unsigned short), 1, file) != 1) {
+    log_error("Could not read header from file");
+    exit(EXIT_FAILURE);
+  }
+  *trash_size = (header >> 13) & 0x07;  // Get first 3 bits
+  *tree_size = header & 0x1FFF;         // Get remaining 13 bits
+}
+
+/**
+ * @brief - Reconstructs the Huffman tree from the compressed file
+ * @param file The file to read from
+ * @return Root of the reconstructed tree
+ * @category ALGORITHM
+ */
+node_t* reconstruct_tree(FILE* file) {
+  unsigned char byte;
+  if (fread(&byte, sizeof(unsigned char), 1, file) != 1) {
+    return NULL;
+  }
+
+  node_t* node = malloc(sizeof(node_t));
+  if (!node) {
+    log_error("Could not allocate memory for tree reconstruction");
+    return NULL;
+  }
+
+  if (byte == '*') {
+    node->element = malloc(sizeof(unsigned char));
+    if (!node->element) {
+      log_error("Could not allocate memory for element in tree reconstruction");
+      free(node);
+      return NULL;
+    }
+    *(unsigned char*)node->element = byte;
+    node->left = reconstruct_tree(file);
+    node->right = reconstruct_tree(file);
+  } else if (byte == '\\') {
+    if (fread(&byte, sizeof(unsigned char), 1, file) != 1) {
+      free(node);
+      return NULL;
+    }
+    node->element = malloc(sizeof(unsigned char));
+    if (!node->element) {
+      log_error("Could not allocate memory for element in tree reconstruction");
+      free(node);
+      return NULL;
+    }
+    *(unsigned char*)node->element = byte;
+    node->left = NULL;
+    node->right = NULL;
+  } else {
+    node->element = malloc(sizeof(unsigned char));
+    if (!node->element) {
+      log_error("Could not allocate memory for element in tree reconstruction");
+      free(node);
+      return NULL;
+    }
+    *(unsigned char*)node->element = byte;
+    node->left = NULL;
+    node->right = NULL;
+  }
+
+  return node;
+}
+
+/**
+ * @brief - Decompresses the data using the reconstructed Huffman tree
+ * @param input_file Input compressed file
+ * @param output_file Output decompressed file
+ * @param root Root of the Huffman tree
+ * @param trash_size Number of trash bits
+ * @param file_size Size of the compressed file
+ * @category ALGORITHM
+ */
+void decompress_data(FILE* input_file, FILE* output_file, node_t* root,
+                     unsigned int trash_size, long data_start_pos) {
+  node_t* current = root;
+  unsigned char byte;
+
+  // Get current position and calculate data size
+  fseek(input_file, 0, SEEK_END);
+  long file_size = ftell(input_file);
+  fseek(input_file, data_start_pos, SEEK_SET);
+
+  long data_size = file_size - data_start_pos;
+  size_t bytes_read = 0;
+
+  while (fread(&byte, sizeof(unsigned char), 1, input_file)) {
+    bytes_read++;
+    int bits_to_read = (bytes_read == data_size) ? 8 - trash_size : 8;
+
+    // Read bits from MSB to LSB
+    for (int i = 7; i >= 8 - bits_to_read; i--) {
+      int bit = (byte >> i) & 1;
+
+      if (bit) {
+        current = current->right;
+      } else {
+        current = current->left;
+      }
+
+      if (current == NULL) {
+        log_error("Invalid Huffman tree path during decompression");
+        return;
+      }
+
+      if (current->left == NULL && current->right == NULL) {
+        fwrite(current->element, sizeof(unsigned char), 1, output_file);
+        current = root;
+      }
+    }
+  }
+}
+
+/**
+ * @brief - Main function for extracting compressed files
+ * @category ALGORITHM
+ */
+void extract_file(char* file_name) {
+  FILE* input_file = fopen(file_name, "rb");
+  if (!input_file) {
+    log_error("Could not open input file");
+    free(file_name);
+    return;
+  }
+
+  // Read header information
+  unsigned int trash_size, tree_size;
+  read_header(input_file, &trash_size, &tree_size);
+
+  // Reconstruct Huffman tree
+  node_t* root = reconstruct_tree(input_file);
+  if (!root) {
+    log_error("Could not reconstruct Huffman tree");
+    fclose(input_file);
+    free(file_name);
+    return;
+  }
+
+  // Get current position after reading tree
+  long data_start_pos = ftell(input_file);
+
+  // Create output file
+  char* output_file_name = malloc(strlen(file_name) + 10);
+  if (!output_file_name) {
+    log_error("Could not allocate memory for output file name");
+    destroy_tree(root);
+    free(file_name);
+    fclose(input_file);
+    return;
+  }
+  strcpy(output_file_name, file_name);
+
+  printf("Enter the target file extension (including the dot, e.g., .txt): ");
+  char* extension = ask_file_extension();
+  change_file_extension(output_file_name, extension);
+
+  FILE* output_file = fopen(output_file_name, "wb");
+  if (!output_file) {
+    log_error("Could not create output file");
+    destroy_tree(root);
+    free(output_file_name);
+    free(extension);
+    fclose(input_file);
+    free(file_name);
+    return;
+  }
+
+  // Decompress the data
+  decompress_data(input_file, output_file, root, trash_size, data_start_pos);
+
+  // Cleanup
+  destroy_tree(root);
+  free(output_file_name);
+  free(extension);
+  fclose(input_file);
+  fclose(output_file);
+
+  log_info("File extracted successfully");
+}
+
 int main() {
   // Declaring variables for the program
   int mode;
@@ -535,19 +747,25 @@ int main() {
   node_t* root;
   int tree_height;
   char** codes;
+  char* current_code;
+  char* compressed_name;
 
   // Deciding if the user wants to either compress or extract the given file
-  printf("Press the key of the function you want to use:\n");
-  printf("\t1. Compress file\n");
-  printf("\t2. Extract file\n");
-  scanf("%d", &mode);
+  display_menu();
+  if (scanf("%d", &mode) != 1) {
+    log_error("Invalid input");
+    return EXIT_FAILURE;
+  }
 
-  // Getting the file, its content and its size
   file_name = get_file_name();
-  content = get_file_content(file_name, &file_size);
 
   // Compression mode
   if (mode == 1) {
+    log_info("Starting compression process...");
+
+    // Get file content and size
+    content = get_file_content(file_name, &file_size);
+
     // Setting up element frequencies
     frequencies = get_frequencies(content, file_size);
 
@@ -556,31 +774,51 @@ int main() {
 
     // Setting up the huffman tree
     root = create_tree(head);
-    printf("Huffman Tree:\n");
-    print_tree(root, 0);
 
-    // Getting tree height
+    // Get tree height for code allocation
     tree_height = get_tree_height(root);
-    printf("Tree height: %d\n", tree_height);
 
-    // Generating codes
+    // Code generation
     codes = malloc(ASCII_SIZE * sizeof(char*));
+    if (!codes) {
+      log_error("Could not allocate memory for codes");
+      exit(EXIT_FAILURE);
+    }
+
     for (int i = 0; i < ASCII_SIZE; i++) {
       // Allocate memory for each code string
       // Each code can be at most tree_height bits long + 1 for null terminator
-      codes[i] = calloc(tree_height + 1, sizeof(char));
+      codes[i] = calloc(tree_height + 2, sizeof(char));
+      if (!codes[i]) {
+        log_error("Could not allocate memory for code string");
+        for (int j = 0; j < i; j++) free(codes[j]);
+        free(codes);
+        exit(EXIT_FAILURE);
+      }
     }
-    char* current_code = calloc(tree_height + 1, sizeof(char));
+
+    current_code = calloc(tree_height + 2, sizeof(char));
+    if (!current_code) {
+      log_error("Could not allocate memory for code generation");
+      for (int i = 0; i < ASCII_SIZE; i++) free(codes[i]);
+      free(codes);
+      exit(EXIT_FAILURE);
+    }
+
     generate_codes(root, codes, current_code, 0);
-    print_codes(codes);
 
-    // Writing compressed file
-    remove(file_name);
-    change_file_extension(file_name, ".huff");
-    printf("Compressed file will be saved as: %s\n", file_name);
-    write_compressed_file(file_name, content, file_size, codes, root);
+    // File operations
+    compressed_name = malloc(strlen(file_name) + 10);
+    if (!compressed_name) {
+      log_error("Could not allocate memory for compressed file name");
+      exit(EXIT_FAILURE);
+    }
+    strcpy(compressed_name, file_name);
+    change_file_extension(compressed_name, ".huff");
 
-    // Free leftover memory
+    write_compressed_file(compressed_name, content, file_size, codes, root);
+
+    // Cleanup
     destroy_tree(root);
     for (int i = 0; i < ASCII_SIZE; i++) {
       free(codes[i]);
@@ -588,18 +826,23 @@ int main() {
     free(codes);
     free(current_code);
     free(content);
+    free(compressed_name);
     free(file_name);
     free(frequencies);
+    log_info("Compression completed successfully");
+
   } else if (mode == 2) {
-    // Extraction mode not implemented yet
-    printf("Extraction mode not implemented yet.\n");
-    free(content);
-    free(file_name);
+    log_info("Starting decompression process...");
+
+    // Decompression process
+    extract_file(file_name);
+
+    log_info("Decompression completed successfully");
   } else {
-    printf("Invalid mode selected.\n");
-    free(content);
+    log_error("Invalid mode selected");
     free(file_name);
+    return EXIT_FAILURE;
   }
 
-  return 0;
+  return EXIT_SUCCESS;
 }

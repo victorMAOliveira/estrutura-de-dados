@@ -1,0 +1,27 @@
+var huffman_8c =
+[
+    [ "node", "structnode.html", null ],
+    [ "node_t", "huffman_8c.html#a7c02633e18d6aa5f58539b75f08753d9", null ],
+    [ "add_to_list_ordered", "huffman_8c.html#a8947606b9f3431be1b155271ac8b65ef", null ],
+    [ "ask_file_extension", "huffman_8c.html#a87e7967868659e5d4d13fae85f18ef81", null ],
+    [ "calculate_trash_size", "huffman_8c.html#a16bdb4970e42f350481823735137ab08", null ],
+    [ "calculate_tree_size", "huffman_8c.html#a02abdc139e4b8c0418b9b3e932e23a59", null ],
+    [ "change_file_extension", "huffman_8c.html#aec354b1ba000fb4da26701556b761915", null ],
+    [ "create_list", "huffman_8c.html#a619537db7ea4a7cd821ff991df979e18", null ],
+    [ "create_tree", "huffman_8c.html#ae1176bb2c3d7494567fc84416c5a6add", null ],
+    [ "decompress_data", "huffman_8c.html#a21c79537120e7c0f0a1582cab72f367c", null ],
+    [ "destroy_tree", "huffman_8c.html#aa4b3529554984d5ff4a2c8c320a9322d", null ],
+    [ "display_menu", "huffman_8c.html#a39f5190c4bbb94c4d470854781e91105", null ],
+    [ "extract_file", "huffman_8c.html#a37aa078e607f8af8fbcc28664da9c0d6", null ],
+    [ "fuse_nodes", "huffman_8c.html#afb11d081e73ca0f416a2a2a767d5788d", null ],
+    [ "generate_codes", "huffman_8c.html#aa5875fbd7efe01bdd908a6475fb9485d", null ],
+    [ "get_file_content", "huffman_8c.html#a1249fe0d063c3f76bebe7e51facf1f6d", null ],
+    [ "get_file_name", "huffman_8c.html#ad02504f88657ab4eb5e0d39deb5f27c7", null ],
+    [ "get_frequencies", "huffman_8c.html#a348999659584e5a71ba8599f7795d5f8", null ],
+    [ "get_tree_height", "huffman_8c.html#a657b5e28e6826a4136a7406231c87e84", null ],
+    [ "read_header", "huffman_8c.html#abde65c11a018e1600e9880a4e25413f7", null ],
+    [ "reconstruct_tree", "huffman_8c.html#a58f546e1797f7c11ac3a3ab9ef4b2a87", null ],
+    [ "write_compressed_file", "huffman_8c.html#a8978f53b74d3f7cd1358ec0e0d9f3b6f", null ],
+    [ "write_trash_and_size", "huffman_8c.html#ac0b1d84a938d691016831f210953ceaf", null ],
+    [ "write_tree", "huffman_8c.html#a249f17596c20926c81e92528d33221af", null ]
+];
