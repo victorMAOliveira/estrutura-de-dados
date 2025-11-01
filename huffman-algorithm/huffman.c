@@ -362,13 +362,6 @@ void change_file_extension(char* file_name, const char* new_extension) {
  */
 void write_trash_and_size(FILE* file, unsigned int trash, unsigned int size) {
   // Combine trash and size into two bytes
-  if (trash > 7) {
-    trash = 7;
-  }
-  if (size > 0x1FFF) {
-    size = 0x1FFF;
-  }
-
   unsigned short header = (trash << 13) | (size & 0x1FFF);
 
   // Write the two bytes to the file
