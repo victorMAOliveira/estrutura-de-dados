@@ -157,6 +157,18 @@ void inserirDeArquivo(QT* q, const char* nomeArquivo) {
   printf("→ Inserção concluída a partir do arquivo '%s'\n", nomeArquivo);
 }
 
+void liberaQT(QT* q) {
+  if (!q) return;
+  for (int i = 0; i < q->n; i++) free(q->pts[i]);
+  if (q->dividido) {
+    liberaQT(q->nw);
+    liberaQT(q->ne);
+    liberaQT(q->sw);
+    liberaQT(q->se);
+  }
+  free(q);
+}
+
 int main() {
   Caixa box;
   printf("Limites (centro: x y | largura altura): ");
@@ -220,6 +232,8 @@ int main() {
       printf("Opção inválida.\n");
     }
   } while (op != 0);
+
+  liberaQT(q);
 
   return 0;
 }
